@@ -1,0 +1,29 @@
+@page
+@model Mundial26.Admin.Pages.ExportModel
+@{
+    ViewData["Title"] = "Export JSON";
+}
+
+<h1>Export JSON</h1>
+<p class="text-muted">Writes <code>panini-wc2026.json</code> to the PWA's <code>static/data</code> folder. Commit + push to publish.</p>
+
+@if (Model.OutputPath is not null)
+{
+    <div class="alert alert-success">
+        <strong>Exported.</strong><br />
+        <code>@Model.OutputPath</code><br />
+        <small class="text-muted">@Model.GeneratedAt?.ToString("u")</small>
+    </div>
+}
+else if (Model.Error is not null)
+{
+    <div class="alert alert-danger">
+        <strong>Export failed.</strong><br />
+        <pre class="mb-0">@Model.Error</pre>
+    </div>
+}
+
+<form method="post">
+    <button type="submit" class="btn btn-success btn-lg">Export now</button>
+    <a asp-page="Index" class="btn btn-outline-secondary">Back to dashboard</a>
+</form>

@@ -427,3 +427,23 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# ----- Project-specific (mundial26) -----
+
+# Rider / IntelliJ local state
+.idea/
+
+# Orphaned SQLite files from the pre-SQL-Server era.
+# (Database is now SQL Server; connection string lives in dotnet user-secrets,
+# stored outside the repo at %APPDATA%\Microsoft\UserSecrets\<id>\secrets.json.)
+*.db
+*.db-shm
+*.db-wal
+
+# Claude Code local permission grants (per-developer)
+.claude/settings.local.json
+
+# SvelteKit / Vercel (Project B, later phases)
+.svelte-kit/
+build/
+.vercel/

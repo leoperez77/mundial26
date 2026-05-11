@@ -1,0 +1,39 @@
+@page
+@model Mundial26.Admin.Pages.Countries.IndexModel
+@{
+    ViewData["Title"] = "Countries";
+}
+
+<h1>Countries</h1>
+
+<p class="text-muted">
+    <strong>@Model.PagesFilled</strong> of @Model.Items.Count pages filled
+    &middot;
+    <strong>@Model.GroupsFilled</strong> of @Model.Items.Count groups assigned
+</p>
+
+<table class="table table-sm table-hover align-middle">
+    <thead>
+        <tr>
+            <th style="width: 7rem;">Code</th>
+            <th>Name</th>
+            <th class="text-end" style="width: 6rem;">Page</th>
+            <th class="text-center" style="width: 5rem;">Group</th>
+            <th style="width: 5rem;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.Items)
+        {
+            <tr>
+                <td><code>@c.Code</code></td>
+                <td>@c.Name</td>
+                <td class="text-end">@(c.Page?.ToString() ?? "—")</td>
+                <td class="text-center">@(string.IsNullOrWhiteSpace(c.Group) ? "—" : c.Group)</td>
+                <td>
+                    <a asp-page="Edit" asp-route-code="@c.Code" class="btn btn-sm btn-outline-primary">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

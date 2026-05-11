@@ -1,0 +1,14 @@
+# Default: let Git auto-detect text and normalize to LF in the repo.
+* text=auto eol=lf
+
+# The exported album JSON is generated with explicit LF newlines (System.Text.Json
+# NewLine="\n") so the diff against the seed stays clean. Lock it in.
+web/static/data/panini-wc2026.json text eol=lf
+admin/Mundial26.Admin/Seed/panini_wc2026.json text eol=lf
+
+# Binary
+*.jpeg binary
+*.jpg  binary
+*.png  binary
+*.ico  binary
+*.db   binary

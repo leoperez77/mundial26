@@ -1,0 +1,45 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Mundial 26 — Admin</h1>
+<p class="text-muted">Local data-entry tool. Edits go to SQL Server; "Export JSON" writes <code>web/static/data/panini-wc2026.json</code>.</p>
+
+<div class="row g-3 mt-3">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h6 text-muted text-uppercase mb-1">Pages still null</h2>
+                <p class="display-6 mb-0">@Model.PagesMissing <small class="text-muted fs-6">of @Model.CountriesTotal</small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h6 text-muted text-uppercase mb-1">Groups still null</h2>
+                <p class="display-6 mb-0">@Model.GroupsMissing <small class="text-muted fs-6">of @Model.CountriesTotal</small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h6 text-muted text-uppercase mb-1">Rows in DB</h2>
+                <p class="mb-0">
+                    @Model.CountriesTotal countries &middot;
+                    @Model.StickersTotal stickers &middot;
+                    @Model.SpecialsTotal specials
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-2">
+    <a asp-page="Countries/Index" class="btn btn-outline-primary">Edit countries</a>
+    <a asp-page="Specials/Index" class="btn btn-outline-primary">Edit specials</a>
+    <a asp-page="Export" class="btn btn-success btn-lg ms-auto">Export JSON</a>
+</div>

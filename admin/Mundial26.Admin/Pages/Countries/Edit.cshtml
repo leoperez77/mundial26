@@ -1,0 +1,75 @@
+@page "{code}"
+@model Mundial26.Admin.Pages.Countries.EditModel
+@{
+    ViewData["Title"] = $"Edit {Model.Code}";
+}
+
+<p><a asp-page="Index">&larr; All countries</a></p>
+
+<h1>
+    <code>@Model.Code</code> &mdash; @Model.Country.Name
+</h1>
+
+<form method="post" asp-route-code="@Model.Code">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <label asp-for="Country.Name" class="form-label">Country name</label>
+            <input asp-for="Country.Name" class="form-control" />
+            <span asp-validation-for="Country.Name" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Country.Page" class="form-label">Album page</label>
+            <input asp-for="Country.Page" class="form-control" type="number" min="1" />
+            <span asp-validation-for="Country.Page" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Country.Group" class="form-label">Group (A–L)</label>
+            <input asp-for="Country.Group" class="form-control text-uppercase" maxlength="1" />
+            <span asp-validation-for="Country.Group" class="text-danger"></span>
+        </div>
+    </div>
+
+    <h2 class="h5">Stickers</h2>
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr>
+                <th style="width: 4rem;">#</th>
+                <th style="width: 7rem;">Code</th>
+                <th>Name</th>
+                <th style="width: 12rem;">Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Stickers.Count; i++)
+            {
+                var s = Model.Stickers[i];
+                <tr>
+                    <td>
+                        @s.Number
+                        <input type="hidden" asp-for="Stickers[i].Number" />
+                    </td>
+                    <td><code>@Model.Code-@s.Number</code></td>
+                    <td>
+                        <input asp-for="Stickers[i].Name" class="form-control form-control-sm" />
+                        <span asp-validation-for="Stickers[i].Name" class="text-danger small"></span>
+                    </td>
+                    <td>
+                        <select asp-for="Stickers[i].Type" class="form-select form-select-sm">
+                            @foreach (var t in Model.Types)
+                            {
+                                <option value="@t">@t</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
