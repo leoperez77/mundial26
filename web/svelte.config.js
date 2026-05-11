@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-vercel';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -6,16 +6,11 @@ const config = {
 		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 	},
 	kit: {
-		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: 'index.html',
-			precompress: false,
-			strict: true
-		}),
-		prerender: {
-			handleHttpError: 'warn'
-		}
+		// Default runtime: Node serverless. With ssr=false on the layout and
+		// prerender=false (except for /sitemap.xml), pages are served as a
+		// static SPA shell and the only function call is the sitemap response,
+		// which is prerendered to a real file at build time.
+		adapter: adapter()
 	}
 };
 
