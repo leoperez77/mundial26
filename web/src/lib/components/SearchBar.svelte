@@ -154,25 +154,25 @@
 
 	function submit() {
 		const parsed = parseInput(query);
+		// Exact-code parses always navigate, even before the album JSON has
+		// loaded — the destination page handles its own "loading" / "not found"
+		// state, and racing the album fetch here breaks Enter on slow networks.
 		if (parsed.kind === 'sticker') {
-			if (album.stickerByCode(parsed.code)) {
-				navigate({
-					kind: 'sticker',
-					code: parsed.code,
-					country: parsed.country,
-					countryName: '',
-					name: '',
-					number: parsed.number
-				});
-				return;
-			}
+			navigate({
+				kind: 'sticker',
+				code: parsed.code,
+				country: parsed.country,
+				countryName: '',
+				name: '',
+				number: parsed.number
+			});
+			return;
 		}
 		if (parsed.kind === 'country') {
-			if (album.countryByCode(parsed.code)) {
-				navigate({ kind: 'country', code: parsed.code, name: '' });
-				return;
-			}
+			navigate({ kind: 'country', code: parsed.code, name: '' });
+			return;
 		}
+		// Fuzzy: need results, which need album data.
 		const r = results;
 		if (r.length > 0) navigate(r[highlight].item);
 	}
