@@ -9,7 +9,6 @@
 	let { children } = $props();
 
 	onMount(() => {
-		locale.init();
 		void album.load();
 		void registerPwa();
 	});
