@@ -2,6 +2,7 @@
 	import { Search } from 'lucide-svelte';
 	import { album } from '$lib/stores/album.svelte';
 	import { flagEmoji } from '$lib/util/codes';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let filter = $state('');
 
@@ -25,8 +26,8 @@
 </svelte:head>
 
 <section>
-	<div class="eyebrow">Browse</div>
-	<h1 class="font-display mt-2 text-[32px] leading-[0.95]">All 48 teams</h1>
+	<div class="eyebrow">{m.browse_eyebrow()}</div>
+	<h1 class="font-display mt-2 text-[32px] leading-[0.95]">{m.browse_title()}</h1>
 </section>
 
 <div
@@ -39,20 +40,22 @@
 		inputmode="search"
 		autocomplete="off"
 		spellcheck="false"
-		placeholder="Filter by name, code, or group"
-		aria-label="Filter countries"
+		placeholder={m.browse_filter_placeholder()}
+		aria-label={m.browse_aria_filter()}
 		class="font-mono placeholder:text-muted-light flex-1 bg-transparent text-sm outline-none"
 	/>
 	{#if filter}
-		<button class="text-muted hover:text-text text-xs" onclick={() => (filter = '')}>Clear</button>
+		<button class="text-muted hover:text-text text-xs" onclick={() => (filter = '')}
+			>{m.search_clear()}</button
+		>
 	{/if}
 </div>
 
 {#if !album.data}
-	<p class="text-muted mt-4 text-sm">Loading…</p>
+	<p class="text-muted mt-4 text-sm">{m.common_loading()}</p>
 {:else}
 	<p class="text-muted mt-3 text-xs">
-		{filtered.length} of {countries.length}
+		{filtered.length} {m.browse_count_separator()} {countries.length}
 	</p>
 	<ul class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
 		{#each filtered as c (c.code)}
@@ -72,7 +75,7 @@
 					<div class="font-display mt-3 text-lg leading-none">{c.code}</div>
 					<div class="text-muted mt-1 truncate text-[11px]">{c.name}</div>
 					<div class="font-mono text-gold-deep mt-2 text-[9px] tracking-widest uppercase">
-						Page {c.page ?? '—'}
+						{m.browse_page_label()} {c.page ?? '—'}
 					</div>
 				</a>
 			</li>

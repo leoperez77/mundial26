@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import { Share2, Copy, Check, ArrowRight } from 'lucide-svelte';
+	import { Share2, Check, ArrowRight } from 'lucide-svelte';
 	import { album } from '$lib/stores/album.svelte';
 	import { flagEmoji } from '$lib/util/codes';
+	import * as m from '$lib/paraglide/messages.js';
 
 	const code = $derived(page.params.code?.toUpperCase() ?? '');
 	const found = $derived(album.stickerByCode(code));
@@ -46,13 +47,13 @@
 </svelte:head>
 
 {#if !album.data}
-	<p class="text-muted text-sm">Loading…</p>
+	<p class="text-muted text-sm">{m.common_loading()}</p>
 {:else if !found}
 	<div class="border-border rounded-xl border-2 border-dashed p-8 text-center">
 		<p class="text-muted font-mono text-sm">
-			No sticker with code <span class="font-bold">{code}</span>.
+			{m.sticker_not_found()} <span class="font-bold">{code}</span>.
 		</p>
-		<button class="code-pill mt-4" onclick={() => goto('/')}>Try another</button>
+		<button class="code-pill mt-4" onclick={() => goto('/')}>{m.sticker_try_another()}</button>
 	</div>
 {:else}
 	<!-- Broadcast hero -->
@@ -70,10 +71,12 @@
 					</span>
 					<span class="min-w-0">
 						<span class="font-mono text-gold-light block text-[10px] font-bold tracking-[0.18em] uppercase">
-							{found.country.name}{found.country.group ? ` · Group ${found.country.group}` : ''}
+							{found.country.name}{found.country.group
+								? ` · ${m.country_group_label({ letter: found.country.group })}`
+								: ''}
 						</span>
 						<span class="text-bg/70 block text-xs">
-							Sticker {found.sticker.number} of 20
+							{m.sticker_of_total({ n: found.sticker.number })}
 						</span>
 					</span>
 				</a>
@@ -90,7 +93,7 @@
 			<div class="bg-navy-deep mt-6 flex items-end justify-between rounded-xl px-4 py-5">
 				<div>
 					<div class="font-mono text-gold-light text-[10px] font-bold tracking-[0.18em] uppercase">
-						Album page
+						{m.country_album_page()}
 					</div>
 					<div class="font-display text-gold mt-1 text-[52px] leading-[0.85] tabular-nums">
 						{found.country.page ?? '—'}
@@ -98,7 +101,13 @@
 				</div>
 				<div class="font-mono text-bg/40 text-right text-[10px] tracking-widest uppercase">
 					<div>Mundial 26</div>
-					<div>{found.sticker.type.replace('_', ' ')}</div>
+					<div>
+						{found.sticker.type === 'emblem'
+							? m.sticker_type_emblem()
+							: found.sticker.type === 'team_photo'
+								? m.sticker_type_team_photo()
+								: m.sticker_type_player()}
+					</div>
 				</div>
 			</div>
 
@@ -118,17 +127,17 @@
 		>
 			{#if copied}
 				<Check size={16} aria-hidden="true" />
-				<span>Copied</span>
+				<span>{m.sticker_copied()}</span>
 			{:else}
 				<Share2 size={16} aria-hidden="true" />
-				<span>Share</span>
+				<span>{m.sticker_share()}</span>
 			{/if}
 		</button>
 		<a
 			href="/c/{found.country.code}"
 			class="bg-surface border-border hover:bg-bg-alt flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-bold transition-colors"
 		>
-			<span>All of {found.country.name}</span>
+			<span>{m.sticker_all_of({ name: found.country.name })}</span>
 			<ArrowRight size={16} aria-hidden="true" />
 		</a>
 	</div>

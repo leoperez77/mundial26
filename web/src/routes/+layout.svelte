@@ -1,21 +1,35 @@
 <script lang="ts">
 	import '../app.css';
 	import { onMount } from 'svelte';
-	import favicon from '$lib/assets/favicon.svg';
 	import BrandHeader from '$lib/components/BrandHeader.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
 	import { album } from '$lib/stores/album.svelte';
+	import { locale } from '$lib/stores/locale.svelte';
 
 	let { children } = $props();
 
 	onMount(() => {
+		locale.init();
 		void album.load();
+		void registerPwa();
+	});
+
+	async function registerPwa() {
+		if (!import.meta.env.PROD) return;
+		try {
+			const { registerSW } = await import('virtual:pwa-register');
+			registerSW({ immediate: true });
+		} catch {
+			/* Module missing in dev — ignore. */
+		}
+	}
+
+	$effect(() => {
+		if (typeof document !== 'undefined') {
+			document.documentElement.lang = locale.current;
+		}
 	});
 </script>
-
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
 
 <div class="bg-bg text-text min-h-screen pb-24">
 	<BrandHeader />

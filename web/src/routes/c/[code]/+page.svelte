@@ -5,6 +5,7 @@
 	import { Shield, Users, User } from 'lucide-svelte';
 	import { album } from '$lib/stores/album.svelte';
 	import { flagEmoji } from '$lib/util/codes';
+	import * as m from '$lib/paraglide/messages.js';
 	import type { StickerType } from '$lib/types';
 
 	const code = $derived(page.params.code?.toUpperCase() ?? '');
@@ -37,11 +38,13 @@
 </svelte:head>
 
 {#if !album.data}
-	<p class="text-muted text-sm">Loading…</p>
+	<p class="text-muted text-sm">{m.common_loading()}</p>
 {:else if !country}
 	<div class="rounded-xl border-2 border-dashed border-border p-8 text-center">
-		<p class="font-mono text-sm text-muted">No country with code <span class="font-bold">{code}</span>.</p>
-		<button class="code-pill mt-4" onclick={() => goto('/browse')}>Browse all 48</button>
+		<p class="font-mono text-sm text-muted">
+			{m.country_not_found()} <span class="font-bold">{code}</span>.
+		</p>
+		<button class="code-pill mt-4" onclick={() => goto('/browse')}>{m.country_browse_all()}</button>
 	</div>
 {:else}
 	<!-- Hero card -->
@@ -51,7 +54,7 @@
 			<div class="flex items-start justify-between gap-3">
 				<div class="min-w-0">
 					<div class="font-mono text-gold-light text-[10px] font-bold tracking-[0.18em] uppercase">
-						Country
+						{m.country_eyebrow()}
 					</div>
 					<h1 class="font-display mt-1 text-4xl leading-[0.92]">
 						{country.name}
@@ -60,7 +63,7 @@
 						<span class="code-pill">{country.code}</span>
 						{#if country.group}
 							<span class="font-mono bg-gold-deep text-bg rounded px-2 py-1 text-[10px] font-bold tracking-widest uppercase">
-								Group {country.group}
+								{m.country_group_label({ letter: country.group })}
 							</span>
 						{/if}
 					</div>
@@ -70,7 +73,7 @@
 
 			<div class="bg-navy-deep mt-5 rounded-xl px-4 py-4">
 				<div class="font-mono text-gold-light text-[10px] font-bold tracking-[0.18em] uppercase">
-					Album page
+					{m.country_album_page()}
 				</div>
 				<div class="font-display text-gold mt-1 text-5xl leading-none tabular-nums">
 					{country.page ?? '—'}
@@ -87,7 +90,7 @@
 
 	<!-- Sticker list -->
 	<section class="mt-6">
-		<div class="eyebrow">Stickers</div>
+		<div class="eyebrow">{m.country_stickers_eyebrow()}</div>
 		<ul class="bg-surface border-border mt-3 divide-y divide-[var(--color-border)] overflow-hidden rounded-xl border">
 			{#each country.stickers as s (s.number)}
 				{@const Icon = iconFor(s.type)}

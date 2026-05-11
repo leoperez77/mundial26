@@ -1,4 +1,6 @@
 <script lang="ts">
+	import * as m from '$lib/paraglide/messages.js';
+
 	const KICKOFF = new Date('2026-06-11T20:00:00Z').getTime();
 
 	let now = $state(Date.now());
@@ -40,7 +42,7 @@
 				<span class="bg-red absolute inset-0 rounded-full opacity-30"></span>
 				<span class="bg-red absolute inset-[2px] rounded-full"></span>
 			</span>
-			<span>{days} days</span>
+			<span>{days} {m.header_days()}</span>
 		</div>
 	</div>
 </header>

@@ -4,6 +4,7 @@
 	import { Search, ArrowRight } from 'lucide-svelte';
 	import { album } from '$lib/stores/album.svelte';
 	import { parseInput, flagEmoji } from '$lib/util/codes';
+	import * as m from '$lib/paraglide/messages.js';
 
 	let { autofocus = false } = $props<{ autofocus?: boolean }>();
 
@@ -69,7 +70,6 @@
 	let query = $state('');
 	let debounced = $state('');
 	let timer: ReturnType<typeof setTimeout> | undefined;
-	let focused = $state(false);
 	let highlight = $state(0);
 	let input: HTMLInputElement | undefined = $state();
 
@@ -88,11 +88,57 @@
 		const q = debounced.trim();
 		if (q.length < 2) return [];
 		const parsed = parseInput(q);
-		if (parsed.kind !== 'name') return [];
+
+		// Exact sticker code (e.g. "COL-19"): surface the sticker if it exists,
+		// otherwise fall back to the country card so the user has somewhere to go.
+		if (parsed.kind === 'sticker') {
+			const hit = album.stickerByCode(parsed.code);
+			if (hit) {
+				return [
+					{
+						item: {
+							kind: 'sticker' as const,
+							code: hit.sticker.code,
+							country: hit.country.code,
+							countryName: hit.country.name,
+							name: hit.sticker.name,
+							number: hit.sticker.number
+						},
+						refIndex: 0
+					} satisfies FuseResult<Item>
+				];
+			}
+			const country = album.countryByCode(parsed.country);
+			if (country) {
+				return [
+					{
+						item: { kind: 'country' as const, code: country.code, name: country.name },
+						refIndex: 0
+					} satisfies FuseResult<Item>
+				];
+			}
+			return [];
+		}
+
+		// Exact country code (e.g. "COL"): surface that country.
+		if (parsed.kind === 'country') {
+			const country = album.countryByCode(parsed.code);
+			if (country) {
+				return [
+					{
+						item: { kind: 'country' as const, code: country.code, name: country.name },
+						refIndex: 0
+					} satisfies FuseResult<Item>
+				];
+			}
+			return [];
+		}
+
+		// Fuzzy name match.
 		return fuse.search(q).slice(0, 5);
 	});
 
-	const showDropdown = $derived(focused && results.length > 0);
+	const showDropdown = $derived(query.length > 0 && results.length > 0);
 
 	$effect(() => {
 		if (results.length === 0) highlight = 0;
@@ -102,7 +148,6 @@
 	function navigate(item: Item) {
 		query = '';
 		debounced = '';
-		focused = false;
 		if (item.kind === 'country') void goto(`/c/${item.code}`);
 		else void goto(`/s/${item.code}`);
 	}
@@ -146,7 +191,6 @@
 		} else if (e.key === 'Escape') {
 			query = '';
 			debounced = '';
-			focused = false;
 			input?.blur();
 		}
 	}
@@ -163,7 +207,7 @@
 			class:text-muted={mode !== 'single'}
 			onclick={() => (mode = 'single')}
 		>
-			Code or name
+			{m.search_mode_single()}
 		</button>
 		<button
 			type="button"
@@ -173,7 +217,7 @@
 			class:text-muted={mode !== 'pair'}
 			onclick={() => (mode = 'pair')}
 		>
-			Country + №
+			{m.search_mode_pair()}
 		</button>
 	</div>
 
@@ -182,9 +226,9 @@
 			<select
 				bind:value={pairCountry}
 				class="font-mono bg-transparent flex-1 min-w-0 px-2 py-2 text-base outline-none"
-				aria-label="Country"
+				aria-label={m.search_country_aria()}
 			>
-				<option value="" disabled>Country…</option>
+				<option value="" disabled>{m.search_country_placeholder()}</option>
 				{#each countries as c (c.code)}
 					<option value={c.code}>{flagEmoji(c.code)} {c.code} — {c.name}</option>
 				{/each}
@@ -196,7 +240,7 @@
 				min="1"
 				max="20"
 				placeholder="№"
-				aria-label="Sticker number 1–20"
+				aria-label={m.search_number_aria()}
 				onkeydown={(e) => {
 					if (e.key === 'Enter') {
 						e.preventDefault();
@@ -211,7 +255,7 @@
 				disabled={!pairCountry || !pairNumber}
 				class="bg-navy text-bg disabled:bg-bg-alt disabled:text-muted-light shrink-0 rounded-lg px-4 py-2 text-sm font-bold"
 			>
-				Go
+				{m.search_go()}
 			</button>
 		</div>
 	{:else}
@@ -222,8 +266,6 @@
 		<input
 			bind:this={input}
 			bind:value={query}
-			onfocus={() => (focused = true)}
-			onblur={() => setTimeout(() => (focused = false), 120)}
 			onkeydown={onKeyDown}
 			type="search"
 			inputmode="search"
@@ -231,7 +273,7 @@
 			autocapitalize="characters"
 			spellcheck="false"
 			placeholder="RSA-14"
-			aria-label="Search by sticker code, country code, or name"
+			aria-label={m.search_aria()}
 			class="font-mono placeholder:text-muted-light flex-1 bg-transparent text-base outline-none uppercase"
 		/>
 		{#if query.length > 0}
@@ -244,7 +286,7 @@
 					input?.focus();
 				}}
 			>
-				Clear
+				{m.search_clear()}
 			</button>
 		{/if}
 	</div>
@@ -270,7 +312,7 @@
 							{#if r.item.kind === 'sticker'}
 								<span class="text-muted block truncate text-xs">{r.item.countryName}</span>
 							{:else}
-								<span class="text-muted block truncate text-xs">Country</span>
+								<span class="text-muted block truncate text-xs">{m.search_result_country()}</span>
 							{/if}
 						</span>
 						<span class="code-pill shrink-0">{r.item.code}</span>

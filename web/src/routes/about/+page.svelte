@@ -1,68 +1,94 @@
 <script lang="ts">
 	import { Heart, ExternalLink } from 'lucide-svelte';
 	import { album } from '$lib/stores/album.svelte';
+	import { locale, SUPPORTED_LOCALES, type Locale } from '$lib/stores/locale.svelte';
+	import * as m from '$lib/paraglide/messages.js';
+
+	const LOCALE_LABELS: Record<Locale, string> = {
+		es: 'Español',
+		en: 'English',
+		pt: 'Português'
+	};
 </script>
 
 <svelte:head>
-	<title>About — Mundial 26</title>
+	<title>{m.about_eyebrow()} — Mundial 26</title>
 </svelte:head>
 
 <section>
-	<div class="eyebrow">About</div>
+	<div class="eyebrow">{m.about_eyebrow()}</div>
 	<h1 class="font-display mt-2 text-[32px] leading-[0.95]">Mundial 26</h1>
 	<p class="text-muted mt-3 text-sm leading-relaxed">
-		A fast, offline-capable lookup tool for the Panini FIFA World Cup 2026™ sticker album. Type
-		a code, find the page — without flipping to the back of the album.
+		{m.about_description()}
 	</p>
 </section>
 
 <section class="mt-6">
-	<h2 class="font-mono text-text/70 text-[11px] font-bold tracking-widest uppercase">Data source</h2>
+	<h2 class="font-mono text-text/70 text-[11px] font-bold tracking-widest uppercase">
+		{m.about_data_source_header()}
+	</h2>
 	<p class="text-muted mt-2 text-sm leading-relaxed">
-		Sticker checklist sourced from the
+		{m.about_data_source_text()}
 		<a
 			href="https://cartophilic-info-exch.blogspot.com/"
 			class="text-navy hover:text-navy-light inline-flex items-center gap-1 underline"
 			target="_blank"
 			rel="noopener"
 		>
-			Football Cartophilic Info Exchange<ExternalLink size={12} aria-hidden="true" />
-		</a>
-		. Album page numbers + group letters keyed in from the physical album.
+			{m.about_data_source_link()}<ExternalLink size={12} aria-hidden="true" />
+		</a>{m.about_data_source_text_after()}
 	</p>
 	{#if album.data}
 		<p class="font-mono text-muted-light mt-3 text-[11px]">
-			Last data update: {album.data.generated_at}
+			{m.about_last_update()} {album.data.generated_at}
 		</p>
 	{/if}
 </section>
 
+<!-- Language switcher (plan §6.5) -->
+<section class="mt-6">
+	<h2 class="font-mono text-text/70 text-[11px] font-bold tracking-widest uppercase">
+		{m.about_language_label()}
+	</h2>
+	<div class="bg-bg-alt mt-2 inline-flex rounded-lg p-1 text-[11px] font-bold tracking-wider">
+		{#each SUPPORTED_LOCALES as code (code)}
+			<button
+				type="button"
+				class="rounded-md px-3 py-1.5 transition-colors"
+				class:bg-navy={locale.current === code}
+				class:text-bg={locale.current === code}
+				class:text-muted={locale.current !== code}
+				onclick={() => locale.set(code)}
+			>
+				{LOCALE_LABELS[code]}
+			</button>
+		{/each}
+	</div>
+</section>
+
 <!-- Tip jar placeholder (§6.7). TODO: wire up tip jar provider — see plan §10. -->
 <section class="bg-surface border-border mt-8 rounded-xl border p-5">
-	<div class="eyebrow"><Heart size={12} aria-hidden="true" /> Support</div>
-	<h2 class="font-display mt-2 text-xl leading-tight">Support this project</h2>
-	<p class="text-muted mt-2 text-xs leading-relaxed">
-		One developer, one album, one weekend. If this saved you some flips, you'll be able to drop a
-		tip here soon.
-	</p>
+	<div class="eyebrow"><Heart size={12} aria-hidden="true" /> {m.about_support_eyebrow()}</div>
+	<h2 class="font-display mt-2 text-xl leading-tight">{m.about_support_title()}</h2>
+	<p class="text-muted mt-2 text-xs leading-relaxed">{m.about_support_text()}</p>
 	<button
 		type="button"
 		disabled
 		class="bg-bg-alt text-muted mt-3 inline-flex cursor-not-allowed items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold tracking-wider uppercase"
 	>
-		Coming soon
+		{m.about_coming_soon()}
 	</button>
 </section>
 
 <section class="mt-8">
-	<h2 class="font-mono text-text/70 text-[11px] font-bold tracking-widest uppercase">Disclaimer</h2>
+	<h2 class="font-mono text-text/70 text-[11px] font-bold tracking-widest uppercase">
+		{m.about_disclaimer_header()}
+	</h2>
 	<p class="text-muted mt-2 text-xs leading-relaxed">
-		This site is not affiliated with, endorsed by, or sponsored by Panini, FIFA, or any
-		participating football association. "FIFA World Cup 2026™" and team names are trademarks of
-		their respective owners.
+		{m.about_disclaimer_text()}
 	</p>
 </section>
 
 <footer class="text-muted-light mt-10 text-center text-[10px]">
-	mundial26.co · v0.1 · made with care
+	mundial26.co · v0.1 · {m.common_made_with_care()}
 </footer>

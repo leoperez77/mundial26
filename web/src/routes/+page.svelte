@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import SearchBar from '$lib/components/SearchBar.svelte';
 	import { album } from '$lib/stores/album.svelte';
+	import * as m from '$lib/paraglide/messages.js';
 
 	const HINTS = ['ARG-17', 'BRA-14', 'COL-19'];
 	const KICKOFF = new Date('2026-06-11T20:00:00Z').getTime();
@@ -27,17 +28,19 @@
 </svelte:head>
 
 <section class="pt-2">
-	<div class="eyebrow">Find</div>
+	<div class="eyebrow">{m.home_eyebrow()}</div>
 	<h1 class="font-display mt-3 text-[44px] leading-[0.92] tracking-tight">
-		<span class="text-navy block">Type a code,</span>
-		<span class="text-gold-deep block">find the page.</span>
+		<span class="text-navy block">{m.home_headline_line1()}</span>
+		<span class="text-gold-deep block">{m.home_headline_line2()}</span>
 	</h1>
 </section>
 
 <section class="mt-6">
 	<SearchBar autofocus />
 	<div class="mt-4 flex flex-wrap items-center gap-2">
-		<span class="font-mono text-muted text-[10px] font-bold tracking-widest uppercase">Try</span>
+		<span class="font-mono text-muted text-[10px] font-bold tracking-widest uppercase"
+			>{m.home_try_label()}</span
+		>
 		{#each HINTS as code (code)}
 			<button
 				type="button"
@@ -54,7 +57,7 @@
 	<div class="bg-navy text-bg flex items-center justify-between overflow-hidden rounded-xl px-5 py-4">
 		<div class="min-w-0">
 			<div class="font-mono text-gold-light text-[10px] font-bold tracking-[0.18em] uppercase">
-				Kick-off
+				{m.home_kickoff_label()}
 			</div>
 			<div class="font-display mt-1 text-lg leading-none tracking-wide">
 				MEX &middot; USA &middot; CAN
@@ -63,14 +66,14 @@
 		<div class="text-right">
 			<div class="font-display text-gold text-4xl leading-none tabular-nums">{days}</div>
 			<div class="font-mono text-bg/60 mt-1 text-[9px] font-bold tracking-widest uppercase">
-				Days to go
+				{m.home_days_to_go()}
 			</div>
 		</div>
 	</div>
 </section>
 
 {#if album.error}
-	<p class="text-red mt-6 text-sm">Couldn't load album data: {album.error}</p>
+	<p class="text-red mt-6 text-sm">{m.home_load_error()} {album.error}</p>
 {:else if album.loading && !album.data}
-	<p class="text-muted mt-6 text-xs">Loading album…</p>
+	<p class="text-muted mt-6 text-xs">{m.home_loading()}</p>
 {/if}

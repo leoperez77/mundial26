@@ -1,17 +1,23 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { Search, Grid3x3, Info } from 'lucide-svelte';
+	import * as m from '$lib/paraglide/messages.js';
 
-	const items = [
-		{ href: '/', label: 'Lookup', icon: Search, match: (p: string) => p === '/' },
+	const items = $derived([
+		{ href: '/', label: m.nav_lookup(), icon: Search, match: (p: string) => p === '/' },
 		{
 			href: '/browse',
-			label: 'Browse',
+			label: m.nav_browse(),
 			icon: Grid3x3,
 			match: (p: string) => p.startsWith('/browse') || p.startsWith('/c/') || p.startsWith('/s/')
 		},
-		{ href: '/about', label: 'About', icon: Info, match: (p: string) => p.startsWith('/about') }
-	];
+		{
+			href: '/about',
+			label: m.nav_about(),
+			icon: Info,
+			match: (p: string) => p.startsWith('/about')
+		}
+	]);
 </script>
 
 <nav

@@ -21,3 +21,12 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Paraglide compiled messages (regenerated on every build from messages/*.json)
+/src/lib/paraglide
+
+# Playwright
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
