@@ -1,58 +1,76 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { loadAlbumData } from '$lib/data';
-	import type { AlbumData } from '$lib/types';
+	import { goto } from '$app/navigation';
+	import SearchBar from '$lib/components/SearchBar.svelte';
+	import { album } from '$lib/stores/album.svelte';
 
-	let album = $state<AlbumData | null>(null);
-	let error = $state<string | null>(null);
+	const HINTS = ['ARG-17', 'BRA-14', 'COL-19'];
+	const KICKOFF = new Date('2026-06-11T20:00:00Z').getTime();
 
-	onMount(async () => {
-		try {
-			album = await loadAlbumData();
-		} catch (e) {
-			error = e instanceof Error ? e.message : String(e);
-		}
+	let now = $state(Date.now());
+	$effect(() => {
+		const id = setInterval(() => (now = Date.now()), 1000 * 60);
+		return () => clearInterval(id);
 	});
+	const days = $derived(Math.max(0, Math.floor((KICKOFF - now) / 86_400_000)));
+
+	function hint(code: string) {
+		void goto(`/s/${code}`);
+	}
 </script>
 
 <svelte:head>
-	<title>Mundial 26</title>
+	<title>Mundial 26 — Find your sticker</title>
+	<meta
+		name="description"
+		content="Find the album page for any Panini FIFA World Cup 2026 sticker."
+	/>
 </svelte:head>
 
-<main class="mx-auto max-w-2xl p-8">
-	<div class="eyebrow">Phase 3 / Data loader online</div>
-	<h1 class="font-display mt-2 text-5xl leading-none">Mundial 26</h1>
-	<p class="text-muted mt-2 text-sm">
-		Real home page lands in Phase 4. Below confirms the album JSON loads + caches.
-	</p>
+<section class="pt-2">
+	<div class="eyebrow">Find</div>
+	<h1 class="font-display mt-3 text-[44px] leading-[0.92] tracking-tight">
+		<span class="text-navy block">Type a code,</span>
+		<span class="text-gold-deep block">find the page.</span>
+	</h1>
+</section>
 
-	<section class="bg-surface border-border mt-6 rounded-lg border p-4">
-		{#if error}
-			<p class="text-red">Error: {error}</p>
-		{:else if !album}
-			<p class="text-muted">Loading…</p>
-		{:else}
-			<dl class="font-mono grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 text-sm">
-				<dt class="text-muted">album</dt>
-				<dd>{album.album}</dd>
-				<dt class="text-muted">generated_at</dt>
-				<dd>{album.generated_at}</dd>
-				<dt class="text-muted">countries</dt>
-				<dd>{album.countries.length}</dd>
-				<dt class="text-muted">stickers</dt>
-				<dd>
-					{album.countries.reduce((n, c) => n + c.stickers.length, 0)}
-				</dd>
-				<dt class="text-muted">pages filled</dt>
-				<dd>{album.countries.filter((c) => c.page !== null).length}</dd>
-				<dt class="text-muted">groups assigned</dt>
-				<dd>{album.countries.filter((c) => c.group !== null).length}</dd>
-			</dl>
+<section class="mt-6">
+	<SearchBar autofocus />
+	<div class="mt-4 flex flex-wrap items-center gap-2">
+		<span class="font-mono text-muted text-[10px] font-bold tracking-widest uppercase">Try</span>
+		{#each HINTS as code (code)}
+			<button
+				type="button"
+				class="font-mono bg-bg-alt text-navy hover:bg-border rounded-full px-3 py-1 text-[11px] font-bold tracking-wider uppercase transition-colors"
+				onclick={() => hint(code)}
+			>
+				{code}
+			</button>
+		{/each}
+	</div>
+</section>
 
-			<p class="text-muted mt-4 text-xs">
-				Open DevTools → Application → IndexedDB → <span class="font-mono">keyval-store</span>
-				to see the cached entry under <span class="font-mono">mundial26:album</span>.
-			</p>
-		{/if}
-	</section>
-</main>
+<section class="mt-6">
+	<div class="bg-navy text-bg flex items-center justify-between overflow-hidden rounded-xl px-5 py-4">
+		<div class="min-w-0">
+			<div class="font-mono text-gold-light text-[10px] font-bold tracking-[0.18em] uppercase">
+				Kick-off
+			</div>
+			<div class="font-display mt-1 text-lg leading-none tracking-wide">
+				MEX &middot; USA &middot; CAN
+			</div>
+		</div>
+		<div class="text-right">
+			<div class="font-display text-gold text-4xl leading-none tabular-nums">{days}</div>
+			<div class="font-mono text-bg/60 mt-1 text-[9px] font-bold tracking-widest uppercase">
+				Days to go
+			</div>
+		</div>
+	</div>
+</section>
+
+{#if album.error}
+	<p class="text-red mt-6 text-sm">Couldn't load album data: {album.error}</p>
+{:else if album.loading && !album.data}
+	<p class="text-muted mt-6 text-xs">Loading album…</p>
+{/if}
