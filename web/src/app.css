@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+/* Brand tokens — see MUNDIAL26_DEV_PLAN_v2.md §7. Surfaced both as Tailwind
+   tokens (via @theme, so `bg-navy`/`text-gold` work) and as plain CSS vars
+   (so component-scoped styles can reference them too). */
+@theme {
+	--color-bg: #f4f1e8;
+	--color-bg-alt: #e8e3cf;
+	--color-surface: #ffffff;
+
+	--color-navy: #0e1f3f;
+	--color-navy-deep: #07142b;
+	--color-navy-light: #1b3158;
+
+	--color-gold: #d4a537;
+	--color-gold-light: #f0d582;
+	--color-gold-deep: #8c6515;
+
+	--color-red: #c42e2e;
+	--color-red-deep: #8b1e1e;
+
+	--color-text: #0e1f3f;
+	--color-muted: #6b7280;
+	--color-muted-light: #9ca3af;
+
+	--color-border: #d4cdb5;
+
+	--color-code-bg: #0e1f3f;
+	--color-code-text: #f4f1e8;
+
+	--font-display: 'Anton', system-ui, sans-serif;
+	--font-body: 'Archivo', system-ui, sans-serif;
+	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 14px;
+	--radius-xl: 16px;
+}
+
+:root {
+	color-scheme: light;
+}
+
+html,
+body {
+	background: var(--color-bg);
+	color: var(--color-text);
+	font-family: var(--font-body);
+	font-weight: 500;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.font-display {
+	font-family: var(--font-display);
+	font-weight: 400;
+	text-transform: uppercase;
+}
+
+.font-mono {
+	font-family: var(--font-mono);
+}
+
+/* Identity motifs — recurring patterns documented in §7.6. */
+
+/* 1. Gold-red-gold accent stripe (hero card top edge). */
+.accent-stripe {
+	background: linear-gradient(
+		to right,
+		var(--color-gold) 0%,
+		var(--color-gold) 45%,
+		var(--color-red) 45%,
+		var(--color-red) 60%,
+		var(--color-gold) 60%,
+		var(--color-gold) 100%
+	);
+}
+
+/* 2. Code pill (gold on navy). */
+.code-pill {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	font-weight: 700;
+	background: var(--color-gold);
+	color: var(--color-navy-deep);
+	padding: 5px 10px;
+	border-radius: 4px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+/* 3. Eyebrow label. */
+.eyebrow {
+	font-family: var(--font-mono);
+	font-size: 10px;
+	text-transform: uppercase;
+	letter-spacing: 0.18em;
+	color: var(--color-gold-deep);
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.eyebrow::before {
+	content: '';
+	width: 18px;
+	height: 2px;
+	background: var(--color-gold);
+}
