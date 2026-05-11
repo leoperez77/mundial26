@@ -14,7 +14,18 @@ export default defineConfig({
 		trace: 'retain-on-failure'
 	},
 	projects: [
-		{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }
+		{ name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+		{
+			// Mobile viewport on Chromium — same dimensions as iPhone 13 (390×844)
+			// but uses the already-installed Chromium binary instead of pulling
+			// down webkit. The layout bugs we're guarding against are
+			// viewport-driven, not engine-driven.
+			name: 'mobile',
+			use: {
+				...devices['Pixel 7'],
+				viewport: { width: 390, height: 844 }
+			}
+		}
 	],
 	webServer: externalBaseURL
 		? undefined

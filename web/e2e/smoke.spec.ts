@@ -74,14 +74,26 @@ test.describe('PWA + i18n smoke', () => {
 		await expect(page.getByRole('button', { name: /share|compart/i })).toBeVisible();
 	});
 
-	test('language switcher cycles es → en → pt', async ({ page }) => {
+	test('language switcher cycles es → en → pt and bottom nav reactively updates', async ({
+		page
+	}) => {
 		await page.goto('/about');
+		const nav = page.locator('nav');
+
 		// Force es first to have a stable baseline.
 		await page.getByRole('button', { name: 'Español' }).click();
-		await expect(page.getByRole('link', { name: /buscar/i })).toBeVisible(); // bottom-nav label
+		await expect(nav.getByText(/^Buscar$/)).toBeVisible();
+		await expect(nav.getByText(/^Explorar$/)).toBeVisible();
+		await expect(nav.getByText(/^Acerca$/)).toBeVisible();
+
 		await page.getByRole('button', { name: 'English' }).click();
-		await expect(page.getByRole('link', { name: /lookup/i })).toBeVisible();
+		await expect(nav.getByText(/^Lookup$/)).toBeVisible();
+		await expect(nav.getByText(/^Browse$/)).toBeVisible();
+		await expect(nav.getByText(/^About$/)).toBeVisible();
+
 		await page.getByRole('button', { name: 'Português' }).click();
-		await expect(page.getByRole('link', { name: /buscar/i })).toBeVisible(); // pt also "Buscar"
+		// pt: Buscar / Explorar / Sobre
+		await expect(nav.getByText(/^Buscar$/)).toBeVisible();
+		await expect(nav.getByText(/^Sobre$/)).toBeVisible();
 	});
 });

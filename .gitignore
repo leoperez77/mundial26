@@ -447,3 +447,7 @@ FodyWeavers.xsd
 .svelte-kit/
 build/
 .vercel/
+
+# Playwright (artifacts may end up at repo root if tests are run from there)
+test-results/
+playwright-report/

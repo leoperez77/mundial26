@@ -30,7 +30,7 @@
 	});
 </script>
 
-<div class="bg-bg text-text min-h-screen pb-24">
+<div class="bg-bg text-text min-h-screen overflow-x-hidden pb-24">
 	<BrandHeader />
 	<main class="mx-auto max-w-3xl px-4 py-6">
 		{@render children()}

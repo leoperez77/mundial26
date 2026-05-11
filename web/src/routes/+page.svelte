@@ -29,7 +29,7 @@
 
 <section class="pt-2">
 	<div class="eyebrow">{m.home_eyebrow()}</div>
-	<h1 class="font-display mt-3 text-[44px] leading-[0.92] tracking-tight">
+	<h1 class="font-display mt-3 text-[32px] leading-[0.92] tracking-tight break-words sm:text-[40px] md:text-[44px]">
 		<span class="text-navy block">{m.home_headline_line1()}</span>
 		<span class="text-gold-deep block">{m.home_headline_line2()}</span>
 	</h1>

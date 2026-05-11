@@ -52,23 +52,27 @@
 		<div class="accent-stripe h-1"></div>
 		<div class="relative px-5 py-6">
 			<div class="flex items-start justify-between gap-3">
-				<div class="min-w-0">
+				<div class="min-w-0 flex-1">
 					<div class="font-mono text-gold-light text-[10px] font-bold tracking-[0.18em] uppercase">
 						{m.country_eyebrow()}
 					</div>
-					<h1 class="font-display mt-1 text-4xl leading-[0.92]">
+					<h1 class="font-display mt-1 text-3xl leading-[0.92] break-words sm:text-4xl">
 						{country.name}
 					</h1>
-					<div class="mt-2 flex items-center gap-2">
+					<div class="mt-2 flex flex-wrap items-center gap-2">
 						<span class="code-pill">{country.code}</span>
 						{#if country.group}
-							<span class="font-mono bg-gold-deep text-bg rounded px-2 py-1 text-[10px] font-bold tracking-widest uppercase">
+							<span
+								class="font-mono bg-gold-deep text-bg rounded px-2 py-1 text-[10px] font-bold tracking-[0.12em] whitespace-nowrap uppercase"
+							>
 								{m.country_group_label({ letter: country.group })}
 							</span>
 						{/if}
 					</div>
 				</div>
-				<div class="text-7xl leading-none" aria-hidden="true">{flagEmoji(country.code)}</div>
+				<div class="shrink-0 text-5xl leading-none sm:text-7xl" aria-hidden="true">
+					{flagEmoji(country.code)}
+				</div>
 			</div>
 
 			<div class="bg-navy-deep mt-5 rounded-xl px-4 py-4">
@@ -101,7 +105,6 @@
 					class:bg-gold-light={isHi}
 				>
 					<Icon size={16} class="text-muted shrink-0" aria-hidden="true" />
-					<span class="font-mono text-muted w-12 shrink-0 text-xs tabular-nums">#{s.number}</span>
 					<a href="/s/{s.code}" class="min-w-0 flex-1">
 						<span class="block truncate text-sm font-medium">{s.name}</span>
 					</a>
