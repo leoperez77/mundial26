@@ -16,15 +16,18 @@ export default defineConfig({
 	projects: [
 		{ name: 'chromium', use: { ...devices['Desktop Chrome'] } },
 		{
-			// Mobile viewport on Chromium — same dimensions as iPhone 13 (390×844)
-			// but uses the already-installed Chromium binary instead of pulling
-			// down webkit. The layout bugs we're guarding against are
-			// viewport-driven, not engine-driven.
+			// Mobile viewport on Chromium — useful for cross-browser layout coverage.
 			name: 'mobile',
 			use: {
 				...devices['Pixel 7'],
 				viewport: { width: 390, height: 844 }
 			}
+		},
+		{
+			// Real WebKit engine at iPhone 13 dimensions — catches iOS-Safari-
+			// specific overflow behaviour that Chromium's overflow-x:hidden hides.
+			name: 'iphone',
+			use: { ...devices['iPhone 13'] }
 		}
 	],
 	webServer: externalBaseURL

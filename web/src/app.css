@@ -50,6 +50,11 @@ body {
 	font-weight: 500;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	/* Pin width to viewport. iOS Safari otherwise allows horizontal scroll
+	   when *any* descendant momentarily overflows, even if the offender is
+	   later clipped by overflow-x:hidden on a wrapper. */
+	overflow-x: hidden;
+	max-width: 100vw;
 }
 
 .font-display {

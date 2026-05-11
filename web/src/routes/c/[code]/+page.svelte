@@ -106,7 +106,7 @@
 				>
 					<Icon size={16} class="text-muted shrink-0" aria-hidden="true" />
 					<a href="/s/{s.code}" class="min-w-0 flex-1">
-						<span class="block truncate text-sm font-medium">{s.name}</span>
+						<span class="block text-sm leading-tight font-medium break-words">{s.name}</span>
 					</a>
 					<span class="code-pill shrink-0">{s.code}</span>
 				</li>

@@ -43,6 +43,12 @@ export default defineConfig({
 			workbox: {
 				globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest,woff2}'],
 				navigateFallback: '/',
+				// Take over from any existing SW immediately so users picking up a
+				// new deploy don't see stale cached HTML/CSS until they close every
+				// tab. Combined with registerType: 'autoUpdate' above, this gives a
+				// reload-on-next-paint update model.
+				skipWaiting: true,
+				clientsClaim: true,
 				runtimeCaching: [
 					{
 						// Network-first for the album JSON so corrections roll out fast,
