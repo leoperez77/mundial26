@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import { onMount } from 'svelte';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import BrandHeader from '$lib/components/BrandHeader.svelte';
 	import BottomNav from '$lib/components/BottomNav.svelte';
 	import { album } from '$lib/stores/album.svelte';
@@ -11,6 +12,7 @@
 	onMount(() => {
 		void album.load();
 		void registerPwa();
+		injectAnalytics({ mode: import.meta.env.PROD ? 'production' : 'development' });
 	});
 
 	async function registerPwa() {
