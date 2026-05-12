@@ -43,6 +43,29 @@ test.describe('Mobile layout — no overflow / truncation regressions', () => {
 		await assertNoHorizontalScroll(page);
 	});
 
+	test('home does not autofocus the search input on revisit (no keyboard pop)', async ({ page }) => {
+		await page.addInitScript(() => localStorage.setItem('PARAGLIDE_LOCALE', 'es'));
+		await page.goto('/');
+		await page.waitForTimeout(300);
+
+		// First load: nothing should be focused (autofocus would trigger keyboard).
+		const firstFocus = await page.evaluate(() => document.activeElement?.tagName);
+		expect(firstFocus).not.toBe('INPUT');
+
+		// Navigate away and back via the bottom-nav links.
+		await page.getByRole('link', { name: /explorar|browse/i }).click();
+		await page.waitForURL('**/browse');
+		await page.getByRole('link', { name: /^buscar$|^lookup$/i }).first().click();
+		await page.waitForURL((u) => u.pathname === '/');
+		await page.waitForTimeout(300);
+
+		// Revisit: still no autofocused input — keeps the on-screen keyboard
+		// from popping up and shifting the viewport.
+		const revisitFocus = await page.evaluate(() => document.activeElement?.tagName);
+		expect(revisitFocus).not.toBe('INPUT');
+		await assertNoHorizontalScroll(page);
+	});
+
 	test('country detail /c/ARG: name + group badge fit + sticker names are readable', async ({
 		page
 	}) => {

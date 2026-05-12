@@ -36,7 +36,7 @@
 </section>
 
 <section class="mt-6">
-	<SearchBar autofocus />
+	<SearchBar />
 	<div class="mt-4 flex flex-wrap items-center gap-2">
 		<span class="font-mono text-muted text-[10px] font-bold tracking-widest uppercase"
 			>{m.home_try_label()}</span

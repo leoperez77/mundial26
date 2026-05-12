@@ -6,8 +6,6 @@
 	import { parseInput, flagEmoji } from '$lib/util/codes';
 	import * as m from '$lib/paraglide/messages.js';
 
-	let { autofocus = false } = $props<{ autofocus?: boolean }>();
-
 	let mode = $state<'single' | 'pair'>('single');
 	let pairCountry = $state('');
 	let pairNumber = $state('');
@@ -78,10 +76,6 @@
 		clearTimeout(timer);
 		timer = setTimeout(() => (debounced = value), 150);
 		return () => clearTimeout(timer);
-	});
-
-	$effect(() => {
-		if (autofocus && input) input.focus();
 	});
 
 	const results: FuseResult<Item>[] = $derived.by(() => {
