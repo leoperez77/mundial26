@@ -72,6 +72,11 @@
 	</div>
 </section>
 
+<section class="mt-8">
+	<div class="eyebrow">{m.home_why_eyebrow()}</div>
+	<p class="text-text/80 mt-3 text-sm leading-relaxed">{m.home_why_text()}</p>
+</section>
+
 {#if album.error}
 	<p class="text-red mt-6 text-sm">{m.home_load_error()} {album.error}</p>
 {:else if album.loading && !album.data}
